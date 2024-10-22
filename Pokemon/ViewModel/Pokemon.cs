@@ -59,6 +59,7 @@ namespace Pokemon.ViewModel
 
         #region Commandes
         public BaseCommande cAttaquer { get; set; }
+        public BaseCommande cLoadCommand { get; set; }
 
 
 
@@ -88,10 +89,7 @@ namespace Pokemon.ViewModel
 
         }
         #endregion
-
-        #region Constructeur
-
-        public VM_Pokemon()
+        public void charger()
         {
             Joueur1 = ChargerJoueur(Joueur.Joueur1);
             Joueur2 = ChargerJoueur(Joueur.Joueur2);
@@ -100,6 +98,20 @@ namespace Pokemon.ViewModel
             AttaqueEnCours = new Attaque();
 
             cAttaquer = new BaseCommande(Attaquer);
+        }
+
+        #region Constructeur
+
+        public VM_Pokemon()
+        {
+            Joueur1 = new VM_unJoueur();
+            Joueur2 = new VM_unJoueur();
+            JoueurActif = Joueur1;
+            //lsAttaque = ChargerlsAttaque();
+            AttaqueEnCours = new Attaque();
+
+            cAttaquer = new BaseCommande(Attaquer);
+            cLoadCommand = new BaseCommande(charger);
         }
 
 
