@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel>
-            <Button Content="New Game"/>
+            <Button Content="New Game" Command="{Binding cNewGame}"/>
             <Button Content="Load Game" Command="{Binding cLoadCommand}"/>
         </StackPanel>
         <Grid Grid.Column="1">

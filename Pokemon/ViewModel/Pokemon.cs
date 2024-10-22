@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static System.Formats.Asn1.AsnWriter;
 using System.Windows;
+using Pokemon.View;
 
 namespace Pokemon.ViewModel
 {
@@ -21,8 +22,10 @@ namespace Pokemon.ViewModel
         private VM_unJoueur _JoueurActif;
         private ObservableCollection<Attaque> _lsAttaque = new ObservableCollection<Attaque>();
         private Attaque _AttaqueEnCours;
+		private Attaque _sAttaque1;
+		private Attaque _sAttaque2;
 
-        public VM_unJoueur Joueur1
+		public VM_unJoueur Joueur1
         {
             get { return _Joueur1; }
             set { AssignerChamp<VM_unJoueur>(ref _Joueur1, value, System.Reflection.MethodBase.GetCurrentMethod().Name); }
@@ -55,16 +58,31 @@ namespace Pokemon.ViewModel
             set { AssignerChamp<Attaque>(ref _AttaqueEnCours, value, System.Reflection.MethodBase.GetCurrentMethod().Name); }
         }
 
-        #endregion
+		public Attaque sAttaque1
+		{
+			get { return _sAttaque1; }
+			set { _sAttaque1 = value; }
+		}
 
-        #region Commandes
-        public BaseCommande cAttaquer { get; set; }
+		public Attaque sAttaque2
+        {
+            get { return _sAttaque2; }
+            set { _sAttaque2 = value; }
+        }
+
+		#endregion
+
+			#region Commandes
+		public BaseCommande cAttaquer { get; set; }
         public BaseCommande cLoadCommand { get; set; }
+		public BaseCommande cNewGame { get; set; }
+		public BaseCommande cNewPokemon1 { get; set; }
+		public BaseCommande cNewPokemon2 { get; set; }
 
 
 
 
-        public void Attaquer()
+		public void Attaquer()
         {
             Attaque tmpAttaque = AttaqueEnCours;
             if (JoueurActif.Joueur == Joueur.Joueur1)
@@ -89,33 +107,86 @@ namespace Pokemon.ViewModel
 
         }
         #endregion
-        public void charger()
+        public void Charger()
         {
             Joueur1 = ChargerJoueur(Joueur.Joueur1);
             Joueur2 = ChargerJoueur(Joueur.Joueur2);
             JoueurActif = Joueur1;
-            //lsAttaque = ChargerlsAttaque();
-            AttaqueEnCours = new Attaque();
-
-            cAttaquer = new BaseCommande(Attaquer);
         }
 
-        #region Constructeur
+		public void NewGame()
+		{
+			new G_Pokemon(chConnexion).NouvellePartie();
+			DisplayJ1();
+			DisplayJ2();
+            Charger();
+		}
 
-        public VM_Pokemon()
+		public void NewPokemon1()
+		{
+			C_Pokemon pokemon = new C_Pokemon()
+			{
+				Joueur = Joueur.Joueur1,
+				Name = Joueur1.Name,
+				Element = Joueur1.Element,
+				MaxPV = Joueur1.MaxPV,
+				PV = Joueur1.PV,
+				IdAttaque1 = sAttaque1.Id,
+				IdAttaque2 = sAttaque2.Id
+			};
+
+			new G_Pokemon(chConnexion).AjouterPokemon(pokemon);
+		}
+
+		public void NewPokemon2()
+		{
+			C_Pokemon pokemon = new C_Pokemon()
+			{
+				Joueur = Joueur.Joueur2,
+				Name = Joueur2.Name,
+				Element = Joueur2.Element,
+				MaxPV = Joueur2.MaxPV,
+				PV = Joueur2.PV,
+				IdAttaque1 = sAttaque1.Id,
+				IdAttaque2 = sAttaque2.Id
+			};
+
+            new G_Pokemon(chConnexion).AjouterPokemon(pokemon);
+		}
+
+		#region Constructeur
+
+		public void DisplayJ1()
+		{
+			Joueur1 joueur1 = new Joueur1();
+			joueur1.DataContext = this;
+			joueur1.ShowDialog();
+		}
+
+		public void DisplayJ2()
+		{
+			Joueur2 joueur2 = new Joueur2();
+			joueur2.DataContext = this;
+			joueur2.ShowDialog();
+		}
+
+		public VM_Pokemon()
         {
             Joueur1 = new VM_unJoueur();
             Joueur2 = new VM_unJoueur();
             JoueurActif = Joueur1;
-            //lsAttaque = ChargerlsAttaque();
+            lsAttaque = ChargerlsAttaque();
             AttaqueEnCours = new Attaque();
+			sAttaque1 = new Attaque();
+			sAttaque2 = new Attaque();
 
-            cAttaquer = new BaseCommande(Attaquer);
-            cLoadCommand = new BaseCommande(charger);
+			cAttaquer = new BaseCommande(Attaquer);
+            cLoadCommand = new BaseCommande(Charger);
+            cNewGame = new BaseCommande(NewGame);
+            cNewPokemon1 = new BaseCommande(NewPokemon1);
+            cNewPokemon2 = new BaseCommande(NewPokemon2);
         }
 
-
-       /*
         private ObservableCollection<Attaque> ChargerlsAttaque()
         {
             ObservableCollection<Attaque> res = new ObservableCollection<Attaque>();
@@ -125,7 +196,7 @@ namespace Pokemon.ViewModel
             }
             return res;
         }
-       */
+       
         private VM_unJoueur ChargerJoueur(Joueur joueur)
         {
             VM_unJoueur res = new VM_unJoueur();
