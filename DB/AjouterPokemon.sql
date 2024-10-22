@@ -1,0 +1,22 @@
+﻿CREATE PROCEDURE [dbo].[AjouterPokemon]
+	
+	@NOM VARCHAR(50),
+	@ELEMENT INT,
+    @MAXPV INT,
+    @PV INT,
+    @ATTAQUE1 INT,
+    @ATTAQUE2 INT,
+    @JOUEUR INT,
+
+	@ID INT OUTPUT
+
+
+AS
+BEGIN
+    -- Insertion du nouveau pokemon dans la table
+    INSERT INTO Pokemon (NOM, ELEMENT,MAXPV,PV,ATTAQUE1,ATTAQUE2,JOUEUR)
+    VALUES (@NOM, @ELEMENT,@MAXPV,@PV,@ATTAQUE1,@ATTAQUE2,@JOUEUR);
+    SET @ID = SCOPE_IDENTITY();
+
+    RETURN 0;
+END;

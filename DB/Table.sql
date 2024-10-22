@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[Pokemon] (
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    [NOM]    VARCHAR (50) NULL,
+    [ELEMENT] INT,
+    [MAXPV] INT,
+    [PV] INT,
+    [ATTAQUE1] INT,
+    [ATTAQUE2] INT,
+    [JOUEUR] INT
+);
